@@ -95,23 +95,24 @@ const EventDetails: NextPage = () => {
             </div>
           </div>
           <div className="card-actions justify-center mt-2">
-            <button
-              className="btn btn-primary"
-              onClick={async () => {
-                try {
-                  await writeTxn(writeCloseSportEvent);
-                } catch (e) {
-                  if (e instanceof Error) {
-                    notification.error(e.message);
-                    return;
+            {event.creator === connectedAddress && !event?.closed && (
+              <button
+                className="btn btn-primary"
+                onClick={async () => {
+                  try {
+                    await writeTxn(writeCloseSportEvent);
+                  } catch (e) {
+                    if (e instanceof Error) {
+                      notification.error(e.message);
+                      return;
+                    }
+                    notification.error("Something went wrong");
                   }
-                  notification.error("Something went wrong");
-                }
-              }}
-            >
-              {isWriteCloseSportEventLoading ? <span className="loading loading-spinner"></span> : "close event"}
-            </button>
-
+                }}
+              >
+                {isWriteCloseSportEventLoading ? <span className="loading loading-spinner"></span> : "close event"}
+              </button>
+            )}
             <label htmlFor="memory-modal" className="btn btn-primary">
               Create Memory
             </label>

@@ -4,8 +4,29 @@ import { isAddress } from "viem";
 import { useAccount, useBalance, useEnsAvatar, useEnsName } from "wagmi";
 import { Balance, BlockieAvatar } from "~~/components/scaffold-eth";
 
-const BarcelonaTokenAddress = "0x63667746A7A005E45B1fffb13a78d0331065Ff7f";
-const JuventusTokenAddress = "0x1ED7858225dF2a3365d07dD7C08d165D6A399bE6";
+const BarcelonaTokenAddress = "0xdfA36e9522A8a79a87F15E742DBB13186BEB0F1B";
+const JuventusTokenAddress = "0x8D13054a6b2518720C3329bd5b9A1cC8068C1902";
+
+const mockData = [
+  {
+    name: "Event: ETH Istanbul!",
+    description: "Carlos scoring a goal",
+    image:
+      "https://images.unsplash.com/photo-1560272564-c83b66b1ad12?q=80&w=2849&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    name: "Event: ETH CC!",
+    description: "People cheering",
+    image:
+      "https://images.unsplash.com/photo-1504016798967-59a258e9386d?q=80&w=2874&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    name: "Event: ETH Tokyo",
+    description: "Goalkeeper saving a goal",
+    image:
+      "https://images.unsplash.com/photo-1542852869-ecc293ff89c0?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+];
 
 const MyProfile: NextPage = () => {
   const [ens, setEns] = useState<string | null>();
@@ -31,7 +52,7 @@ const MyProfile: NextPage = () => {
     token: JuventusTokenAddress,
     address: address,
     watch: true,
-    chainId: 88882,
+    chainId: 88888,
   });
 
   // We need to apply this pattern to avoid Hydration errors.
@@ -87,19 +108,15 @@ const MyProfile: NextPage = () => {
       </div>
       <h2 className="text-3xl font-bold text-center">My Memories</h2>
       <div className="flex gap-6 flex-wrap items-center justify-center">
-        {Array.from({ length: 3 }).map((_, index) => (
+        {mockData.map((data, index) => (
           <div className="card card-compact w-96 bg-base-100 shadow-xl" key={index}>
             <figure className="max-h-60">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://images.unsplash.com/photo-1560272564-c83b66b1ad12?q=80&w=2849&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="football player"
-                height={100}
-              />
+              <img src={data.image} alt="football player" height={100} />
             </figure>
             <div className="card-body">
-              <h2 className="card-title !mb-0">Event: ETH Istanbul!</h2>
-              <p>Shiv scoring a goal</p>
+              <h2 className="card-title !mb-0">{data.name}</h2>
+              <p>{data.description}</p>
             </div>
           </div>
         ))}
