@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import axios from "axios";
 import { NextPage } from "next";
 import { formatEther } from "viem";
-import { useContractRead, useContractWrite, useNetwork } from "wagmi";
+import { useAccount, useContractRead, useContractWrite, useNetwork } from "wagmi";
 import { Spinner } from "~~/components/assets/Spinner";
 import { Address, InputBase } from "~~/components/scaffold-eth";
 import { useTransactor } from "~~/hooks/scaffold-eth";
 import { mainChainReadConfig, wagmiWriteConfig } from "~~/utils/multichain";
 import { changeUnixTimeStamptoDate, notification } from "~~/utils/scaffold-eth";
+
+const SERVER_URL = "http://localhost:9003/api/web3";
 
 const EventDetails: NextPage = () => {
   const router = useRouter();
@@ -18,6 +21,8 @@ const EventDetails: NextPage = () => {
     functionName: "getSportEventData",
     args: [BigInt(eventId)],
   });
+
+  const { address: connectedAddress } = useAccount();
 
   const writeTxn = useTransactor();
 
@@ -159,7 +164,22 @@ const EventDetails: NextPage = () => {
                   <button
                     className="btn btn-primary"
                     disabled={isWriteCloseSportEventLoading}
-                    onClick={() => console.log("The formStateiS:", formState)}
+                    onClick={async () => {
+                      try {
+                        const res = await axios.post(`${SERVER_URL}/upload-encrypted-file`, {
+                          image: formState.image,
+                          creatorAddr: connectedAddress,
+                        });
+                        console.log("Etfsdfsd", res);
+                        console.log("The server response is:", res.data);
+                      } catch (e) {
+                        if (e instanceof Error) {
+                          notification.error(e.message);
+                          return;
+                        }
+                        notification.error("Something went wrong");
+                      }
+                    }}
                   >
                     {isWriteCloseSportEventLoading ? <span className="loading loading-spinner"></span> : "create"}
                   </button>
