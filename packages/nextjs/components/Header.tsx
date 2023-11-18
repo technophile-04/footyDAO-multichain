@@ -23,8 +23,8 @@ export const menuLinks: HeaderMenuLink[] = [
     icon: <BugAntIcon className="h-4 w-4" />,
   },
   {
-    label: "All events",
-    href: "/allEvents",
+    label: "Events",
+    href: "/events",
     icon: <CalendarIcon className="h-4 w-4" />,
   },
 ];

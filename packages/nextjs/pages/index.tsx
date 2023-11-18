@@ -1,11 +1,11 @@
 import { useState } from "react";
 import type { NextPage } from "next";
 import { parseEther } from "viem";
-import { useContractRead, useContractWrite, useNetwork } from "wagmi";
+import { useContractWrite, useNetwork } from "wagmi";
 import { MetaHeader } from "~~/components/MetaHeader";
 import { InputBase } from "~~/components/scaffold-eth";
 import { useTransactor } from "~~/hooks/scaffold-eth";
-import { mainChainReadConfig, wagmiWriteConfig } from "~~/utils/multichain";
+import { wagmiWriteConfig } from "~~/utils/multichain";
 import { notification } from "~~/utils/scaffold-eth";
 
 export const NUMBER_REGEX = /^\.?\d+\.?\d*$/;
@@ -45,12 +45,6 @@ const Home: NextPage = () => {
     ...wagmiWriteConfig(connectedChain),
     functionName: "createSportEvent",
     args: [0n, 0n, 0n, 0n, 0n, 0n],
-  });
-
-  const { data: currentSportsEventCount } = useContractRead({
-    ...mainChainReadConfig,
-    functionName: "sportEventCount",
-    watch: true,
   });
 
   const handleCreateEvent = async () => {
@@ -96,7 +90,6 @@ const Home: NextPage = () => {
     <>
       <MetaHeader />
       <div className="flex items-center flex-col flex-grow pt-10">
-        <h2 className="text-2xl">Total sports events count: {currentSportsEventCount?.toString()}</h2>
         <div className="card card-compact w-96 bg-base-100 shadow-xl">
           <div className="card-body">
             <h2 className="card-title">Create Event!</h2>

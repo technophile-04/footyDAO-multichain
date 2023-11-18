@@ -1,7 +1,7 @@
 const contracts = {
   420: {
     FootyDAO: {
-      address: "0x9dd5438E45e16f919C73de45473789996ACa9E60",
+      address: "0x6ed3783fda9ab2ca991ab6a99e574784874a7678",
       abi: [
         {
           inputs: [
@@ -1314,7 +1314,7 @@ const contracts = {
       ],
     },
     FootyDAOAdapter: {
-      address: "0xBeFB75ac803fbF3A0bbd8BF6D8c8F1985133ebFC",
+      address: "0xc150cbd1a99036989debcfbfe820829197ba04aa",
       abi: [
         {
           inputs: [

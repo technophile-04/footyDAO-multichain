@@ -12,7 +12,7 @@ export const wagmiWriteConfig = (
   abi: (typeof deployedContracts)[typeof targetNetwork.id]["FootyDAO"]["abi"];
   chainId: number;
 } => {
-  if (chain && chain.id in deployedContracts && chain.id !== getTargetNetwork().id) {
+  if (chain && chain.id in deployedContracts && chain.id !== getTargetNetwork().id && !chain.unsupported) {
     return {
       // @ts-expect-error
       address: deployedContracts[chain.id].FootyDAOAdapter.address,
