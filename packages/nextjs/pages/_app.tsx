@@ -4,7 +4,7 @@ import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowki
 import "@rainbow-me/rainbowkit/styles.css";
 import NextNProgress from "nextjs-progressbar";
 import { Toaster } from "react-hot-toast";
-import { useDarkMode } from "usehooks-ts";
+import { useDarkMode, useIsMounted } from "usehooks-ts";
 import { WagmiConfig } from "wagmi";
 import { Footer } from "~~/components/Footer";
 import { Header } from "~~/components/Header";
@@ -22,6 +22,8 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const { isDarkMode } = useDarkMode();
 
+  const isMounted = useIsMounted();
+
   useEffect(() => {
     if (price > 0) {
       setNativeCurrencyPrice(price);
@@ -31,6 +33,10 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
   useEffect(() => {
     setIsDarkTheme(isDarkMode);
   }, [isDarkMode]);
+
+  if (!isMounted()) {
+    return null;
+  }
 
   return (
     <WagmiConfig config={wagmiConfig}>

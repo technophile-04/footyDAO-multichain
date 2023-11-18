@@ -1,57 +1,176 @@
-import Link from "next/link";
+import { useState } from "react";
 import type { NextPage } from "next";
-import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { parseEther } from "viem";
+import { useContractRead, useContractWrite, useNetwork } from "wagmi";
 import { MetaHeader } from "~~/components/MetaHeader";
+import { InputBase } from "~~/components/scaffold-eth";
+import { useTransactor } from "~~/hooks/scaffold-eth";
+import { mainChainReadConfig, wagmiWriteConfig } from "~~/utils/multichain";
+import { notification } from "~~/utils/scaffold-eth";
+
+export const NUMBER_REGEX = /^\.?\d+\.?\d*$/;
+
+export const isConvertibltToBigint = (value: string) => {
+  try {
+    BigInt(value);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+export const isConvertibltToEther = (value: string) => {
+  try {
+    parseEther(value);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
 
 const Home: NextPage = () => {
+  const [formState, setFormState] = useState({
+    startTime: "",
+    endTime: "",
+    registrationTime: "",
+    stake: "",
+    cost: "",
+    maxAttendees: "",
+  });
+
+  const { chain: connectedChain } = useNetwork();
+  const writeTxn = useTransactor();
+
+  const { writeAsync: writeSportsEvent, isLoading: isWriteSportEventLoading } = useContractWrite({
+    ...wagmiWriteConfig(connectedChain),
+    functionName: "createSportEvent",
+    args: [0n, 0n, 0n, 0n, 0n, 0n],
+  });
+
+  const { data: currentSportsEventCount } = useContractRead({
+    ...mainChainReadConfig,
+    functionName: "sportEventCount",
+    watch: true,
+  });
+
+  const handleCreateEvent = async () => {
+    try {
+      const parsedStartTime = (new Date(formState.startTime).getTime() / 1000).toString();
+      const parsedEndTime = (new Date(formState.endTime).getTime() / 1000).toString();
+      const parsedRegistrationTime = (new Date(formState.registrationTime).getTime() / 1000).toString();
+
+      if (
+        !isConvertibltToBigint(parsedStartTime) ||
+        !isConvertibltToBigint(parsedEndTime) ||
+        !isConvertibltToBigint(parsedRegistrationTime) ||
+        !isConvertibltToEther(formState.stake) ||
+        !isConvertibltToEther(formState.cost) ||
+        !isConvertibltToBigint(formState.maxAttendees)
+      ) {
+        notification.error("Invalid input");
+        return;
+      }
+
+      await writeTxn(() =>
+        writeSportsEvent({
+          args: [
+            BigInt(parsedStartTime),
+            BigInt(parsedEndTime),
+            BigInt(parsedRegistrationTime),
+            parseEther(formState.stake),
+            parseEther(formState.cost),
+            BigInt(formState.maxAttendees),
+          ],
+        }),
+      );
+    } catch (e) {
+      if (e instanceof Error) {
+        notification.error(e.message);
+        return;
+      }
+      notification.error("Something went wrong");
+    }
+  };
+
   return (
     <>
       <MetaHeader />
       <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center mb-8">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
-          </h1>
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/pages/index.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
-          </p>
-        </div>
-
-        <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <BugAntIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contract
-                </Link>{" "}
-                tab.
-              </p>
+        <h2 className="text-2xl">Total sports events count: {currentSportsEventCount?.toString()}</h2>
+        <div className="card card-compact w-96 bg-base-100 shadow-xl">
+          <div className="card-body">
+            <h2 className="card-title">Create Event!</h2>
+            <div className="space-y-2">
+              <p>Start time</p>
+              <div className={`flex border-2 border-base-300 bg-base-200 rounded-full text-accent`}>
+                <input
+                  value={formState.startTime}
+                  className="input input-ghost focus:outline-none focus:bg-transparent focus:text-gray-400 h-[2.2rem] min-h-[2.2rem] px-4 border w-full font-medium placeholder:text-accent/50 text-gray-400"
+                  type="datetime-local"
+                  onChange={e => setFormState({ ...formState, startTime: e.target.value })}
+                  autoComplete="off"
+                />
+              </div>
             </div>
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <MagnifyingGlassIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Explore your local transactions with the{" "}
-                <Link href="/blockexplorer" passHref className="link">
-                  Block Explorer
-                </Link>{" "}
-                tab.
-              </p>
+            <div className="space-y-2">
+              <p>End time</p>
+              <div className={`flex border-2 border-base-300 bg-base-200 rounded-full text-accent`}>
+                <input
+                  value={formState.endTime}
+                  className="input input-ghost focus:outline-none focus:bg-transparent focus:text-gray-400 h-[2.2rem] min-h-[2.2rem] px-4 border w-full font-medium placeholder:text-accent/50 text-gray-400"
+                  type="datetime-local"
+                  onChange={e => setFormState({ ...formState, endTime: e.target.value })}
+                  autoComplete="off"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <p>Registration time</p>
+              <div className={`flex border-2 border-base-300 bg-base-200 rounded-full text-accent`}>
+                <input
+                  value={formState.registrationTime}
+                  className="input input-ghost focus:outline-none focus:bg-transparent focus:text-gray-400 h-[2.2rem] min-h-[2.2rem] px-4 border w-full font-medium placeholder:text-accent/50 text-gray-400"
+                  type="datetime-local"
+                  onChange={e => setFormState({ ...formState, registrationTime: e.target.value })}
+                  autoComplete="off"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <p>Stake amount</p>
+              <InputBase
+                placeholder="Amount to stake"
+                value={formState.stake}
+                onChange={value => setFormState({ ...formState, stake: value })}
+                error={Boolean(formState.stake) && !NUMBER_REGEX.test(formState.stake)}
+              />
+            </div>
+            <div className="space-y-2">
+              <p>Cost</p>
+              <InputBase
+                placeholder="cost amount"
+                value={formState.cost}
+                onChange={value => setFormState({ ...formState, cost: value })}
+                error={Boolean(formState.cost) && !NUMBER_REGEX.test(formState.cost)}
+              />
+            </div>
+            <div className="space-y-2">
+              <p>Max attendees</p>
+              <div className={`flex border-2 border-base-300 bg-base-200 rounded-full text-accent`}>
+                <input
+                  value={formState.maxAttendees}
+                  className="input input-ghost focus:outline-none focus:bg-transparent focus:text-gray-400 h-[2.2rem] min-h-[2.2rem] px-4 border w-full font-medium placeholder:text-accent/50 text-gray-400"
+                  type="number"
+                  placeholder="max number of attendees"
+                  onChange={e => setFormState({ ...formState, maxAttendees: e.target.value })}
+                  autoComplete="off"
+                />
+              </div>
+            </div>
+            <div className="card-actions justify-end">
+              <button className="btn btn-primary" disabled={isWriteSportEventLoading} onClick={handleCreateEvent}>
+                {isWriteSportEventLoading ? <span className="loading loading-spinner"></span> : "create"}
+              </button>
             </div>
           </div>
         </div>

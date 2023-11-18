@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Chain } from "@rainbow-me/rainbowkit";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { isAddress } from "viem";
 import { hardhat } from "viem/chains";
-import { useEnsAvatar, useEnsName } from "wagmi";
+import { useEnsAvatar, useEnsName, useNetwork } from "wagmi";
 import { CheckCircleIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
 import { BlockieAvatar } from "~~/components/scaffold-eth";
 import { getBlockExplorerAddressLink, getTargetNetwork } from "~~/utils/scaffold-eth";
@@ -12,6 +13,7 @@ type TAddressProps = {
   address?: string;
   disableAddressLink?: boolean;
   format?: "short" | "long";
+  chain?: Chain;
   size?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl";
 };
 
@@ -28,10 +30,11 @@ const blockieSizeMap = {
 /**
  * Displays an address (or ENS) with a Blockie image and option to copy address.
  */
-export const Address = ({ address, disableAddressLink, format, size = "base" }: TAddressProps) => {
+export const Address = ({ address, disableAddressLink, format, size = "base", chain }: TAddressProps) => {
   const [ens, setEns] = useState<string | null>();
   const [ensAvatar, setEnsAvatar] = useState<string | null>();
   const [addressCopied, setAddressCopied] = useState(false);
+  const { chain: connectedChain } = useNetwork();
 
   const { data: fetchedEns } = useEnsName({ address, enabled: isAddress(address ?? ""), chainId: 1 });
   const { data: fetchedEnsAvatar } = useEnsAvatar({
@@ -66,7 +69,10 @@ export const Address = ({ address, disableAddressLink, format, size = "base" }: 
     return <span className="text-error">Wrong address</span>;
   }
 
-  const blockExplorerAddressLink = getBlockExplorerAddressLink(getTargetNetwork(), address);
+  const blockExplorerAddressLink = getBlockExplorerAddressLink(
+    chain ? chain : connectedChain ? connectedChain : getTargetNetwork(),
+    address,
+  );
   let displayAddress = address?.slice(0, 5) + "..." + address?.slice(-4);
 
   if (ens) {

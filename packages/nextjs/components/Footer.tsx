@@ -1,12 +1,19 @@
 import React from "react";
 import Link from "next/link";
 import { hardhat } from "viem/chains";
-import { CurrencyDollarIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { useAccount, useSwitchNetwork } from "wagmi";
+import {
+  ArrowsRightLeftIcon,
+  ChevronDownIcon,
+  CurrencyDollarIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
 import { HeartIcon } from "@heroicons/react/24/outline";
 import { SwitchTheme } from "~~/components/SwitchTheme";
 import { BuidlGuidlLogo } from "~~/components/assets/BuidlGuidlLogo";
 import { Faucet } from "~~/components/scaffold-eth";
 import { useGlobalState } from "~~/services/store/store";
+import { enabledChains } from "~~/services/web3/wagmiConnectors";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
 
 /**
@@ -15,6 +22,8 @@ import { getTargetNetwork } from "~~/utils/scaffold-eth";
 export const Footer = () => {
   const nativeCurrencyPrice = useGlobalState(state => state.nativeCurrencyPrice);
   const isLocalNetwork = getTargetNetwork().id === hardhat.id;
+  const { switchNetwork } = useSwitchNetwork();
+  const { isConnected } = useAccount();
 
   return (
     <div className="min-h-0 py-5 px-1 mb-11 lg:mb-0">
@@ -27,6 +36,27 @@ export const Footer = () => {
                   <CurrencyDollarIcon className="h-4 w-4" />
                   <span>{nativeCurrencyPrice}</span>
                 </div>
+              </div>
+            )}
+            {isConnected && (
+              <div className="dropdown dropdown-top">
+                <label tabIndex={0} className="btn btn-primary btn-sm font-normal normal-case gap-1 cursor-auto">
+                  <span>Switch network</span>
+                  <ChevronDownIcon className="h-6 w-4 ml-2 sm:ml-0" />
+                </label>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content menu p-2 mt-1 shadow-center shadow-accent bg-base-200 rounded-box gap-1"
+                >
+                  {enabledChains.map(chain => (
+                    <li key={chain.id}>
+                      <button className="menu-item" type="button" onClick={() => switchNetwork?.(chain.id)}>
+                        <ArrowsRightLeftIcon className="h-6 w-4 ml-2 sm:ml-0" />
+                        <span className="whitespace-nowrap">Switch to {chain.name}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
             {isLocalNetwork && (
