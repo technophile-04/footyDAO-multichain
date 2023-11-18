@@ -101,7 +101,7 @@ const Home: NextPage = () => {
           <div className="card-body">
             <h2 className="card-title">Create Event!</h2>
             <div className="space-y-2">
-              <p>Start time</p>
+              <p className="m-0 text-lg ml-2">Start time</p>
               <div className={`flex border-2 border-base-300 bg-base-200 rounded-full text-accent`}>
                 <input
                   value={formState.startTime}
@@ -113,7 +113,7 @@ const Home: NextPage = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <p>End time</p>
+              <p className="m-0 text-lg ml-2">End time</p>
               <div className={`flex border-2 border-base-300 bg-base-200 rounded-full text-accent`}>
                 <input
                   value={formState.endTime}
@@ -125,7 +125,7 @@ const Home: NextPage = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <p>Registration time</p>
+              <p className="m-0 text-lg ml-2">Registration time</p>
               <div className={`flex border-2 border-base-300 bg-base-200 rounded-full text-accent`}>
                 <input
                   value={formState.registrationTime}
@@ -137,7 +137,7 @@ const Home: NextPage = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <p>Stake amount</p>
+              <p className="m-0 text-lg ml-2">Stake amount</p>
               <InputBase
                 placeholder="Amount to stake"
                 value={formState.stake}
@@ -146,7 +146,7 @@ const Home: NextPage = () => {
               />
             </div>
             <div className="space-y-2">
-              <p>Cost</p>
+              <p className="m-0 text-lg ml-2">Cost amount</p>
               <InputBase
                 placeholder="cost amount"
                 value={formState.cost}
@@ -155,7 +155,7 @@ const Home: NextPage = () => {
               />
             </div>
             <div className="space-y-2">
-              <p>Max attendees</p>
+              <p className="m-0 text-lg ml-2">Max attendees</p>
               <div className={`flex border-2 border-base-300 bg-base-200 rounded-full text-accent`}>
                 <input
                   value={formState.maxAttendees}

@@ -15,7 +15,7 @@ import {
 import { Address, Balance, BlockieAvatar } from "~~/components/scaffold-eth";
 import { useAutoConnect, useNetworkColor } from "~~/hooks/scaffold-eth";
 import { enabledChains } from "~~/services/web3/wagmiConnectors";
-import { getBlockExplorerAddressLink, getTargetNetwork } from "~~/utils/scaffold-eth";
+import { NETWORKS_EXTRA_DATA, getBlockExplorerAddressLink, getTargetNetwork } from "~~/utils/scaffold-eth";
 
 /**
  * Custom Wagmi Connect Button (watch balance + custom design)
@@ -62,7 +62,8 @@ export const RainbowKitCustomConnectButton = () => {
                           <button className="menu-item" type="button" onClick={() => switchNetwork?.(chain.id)}>
                             <ArrowsRightLeftIcon className="h-6 w-4 ml-2 sm:ml-0" />
                             <span className="whitespace-nowrap">
-                              Switch to <span style={{ color: networkColor }}>{chain.name}</span>
+                              Switch to{" "}
+                              <span style={{ color: NETWORKS_EXTRA_DATA[chain?.id]?.color }}>{chain.name}</span>
                             </span>
                           </button>
                         </li>
