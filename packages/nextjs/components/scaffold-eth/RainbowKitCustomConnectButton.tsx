@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { QRCodeSVG } from "qrcode.react";
 import CopyToClipboard from "react-copy-to-clipboard";
-import { useDisconnect, useSwitchNetwork } from "wagmi";
+import { mainnet, useDisconnect, useSwitchNetwork } from "wagmi";
 import {
   ArrowLeftOnRectangleIcon,
   ArrowTopRightOnSquareIcon,
@@ -59,17 +59,19 @@ export const RainbowKitCustomConnectButton = () => {
                       tabIndex={0}
                       className="dropdown-content menu p-2 mt-1 shadow-center shadow-accent bg-base-200 rounded-box gap-1"
                     >
-                      {enabledChains.map(chain => (
-                        <li key={chain.id}>
-                          <button className="menu-item" type="button" onClick={() => switchNetwork?.(chain.id)}>
-                            <ArrowsRightLeftIcon className="h-6 w-4 ml-2 sm:ml-0" />
-                            <span className="whitespace-nowrap">
-                              Switch to{" "}
-                              <span style={{ color: NETWORKS_EXTRA_DATA[chain?.id]?.color }}>{chain.name}</span>
-                            </span>
-                          </button>
-                        </li>
-                      ))}
+                      {enabledChains
+                        .filter(chain => chain.id !== mainnet.id)
+                        .map(chain => (
+                          <li key={chain.id}>
+                            <button className="menu-item" type="button" onClick={() => switchNetwork?.(chain.id)}>
+                              <ArrowsRightLeftIcon className="h-6 w-4 ml-2 sm:ml-0" />
+                              <span className="whitespace-nowrap">
+                                Switch to{" "}
+                                <span style={{ color: NETWORKS_EXTRA_DATA[chain?.id]?.color }}>{chain.name}</span>
+                              </span>
+                            </button>
+                          </li>
+                        ))}
                       <li>
                         <button
                           className="menu-item text-error btn-sm !rounded-xl flex gap-3 py-3"

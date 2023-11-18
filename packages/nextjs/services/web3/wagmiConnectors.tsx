@@ -19,6 +19,25 @@ import { getTargetNetwork } from "~~/utils/scaffold-eth";
 const configuredNetwork = getTargetNetwork();
 const { onlyLocalBurnerWallet } = scaffoldConfig;
 
+const chilizChain = {
+  name: "Chiliz",
+  network: "chiliz",
+  id: 88888,
+  nativeCurrency: {
+    name: "Chiliz",
+    symbol: "CHZ",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://chiliz.publicnode.com/"],
+    },
+    public: {
+      http: ["https://chiliz.publicnode.com/"],
+    },
+  },
+} satisfies chains.Chain;
+
 // We always want to have mainnet enabled (ENS resolution, ETH price, etc). But only once.
 export const enabledChains = [
   configuredNetwork,
@@ -26,6 +45,7 @@ export const enabledChains = [
   chains.baseGoerli,
   chains.arbitrumGoerli,
   chains.polygonMumbai,
+  chilizChain,
 ];
 
 /**

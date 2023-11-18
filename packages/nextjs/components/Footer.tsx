@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { hardhat } from "viem/chains";
+import { hardhat, mainnet } from "viem/chains";
 import { useAccount, useSwitchNetwork } from "wagmi";
 import {
   ArrowsRightLeftIcon,
@@ -48,14 +48,16 @@ export const Footer = () => {
                   tabIndex={0}
                   className="dropdown-content menu p-2 mt-1 shadow-center shadow-accent bg-base-200 rounded-box gap-1"
                 >
-                  {enabledChains.map(chain => (
-                    <li key={chain.id}>
-                      <button className="menu-item" type="button" onClick={() => switchNetwork?.(chain.id)}>
-                        <ArrowsRightLeftIcon className="h-6 w-4 ml-2 sm:ml-0" />
-                        <span className="whitespace-nowrap">Switch to {chain.name}</span>
-                      </button>
-                    </li>
-                  ))}
+                  {enabledChains
+                    .filter(chain => chain.id !== mainnet.id)
+                    .map(chain => (
+                      <li key={chain.id}>
+                        <button className="menu-item" type="button" onClick={() => switchNetwork?.(chain.id)}>
+                          <ArrowsRightLeftIcon className="h-6 w-4 ml-2 sm:ml-0" />
+                          <span className="whitespace-nowrap">Switch to {chain.name}</span>
+                        </button>
+                      </li>
+                    ))}
                 </ul>
               </div>
             )}

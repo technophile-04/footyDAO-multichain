@@ -45,7 +45,7 @@ const MyProfile: NextPage = () => {
     token: BarcelonaTokenAddress,
     address: address,
     watch: true,
-    chainId: 88882,
+    chainId: 88888,
   });
 
   const { data: juventusTokenBalance } = useBalance({
