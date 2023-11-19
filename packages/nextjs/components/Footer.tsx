@@ -1,6 +1,8 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { GateFiDisplayModeEnum, GateFiSDK } from "@gatefi/js-sdk";
 import { Chat } from "@pushprotocol/uiweb";
 import { IDKitWidget, ISuccessResult } from "@worldcoin/idkit";
+import { randomBytes } from "crypto";
 import { hardhat, mainnet } from "viem/chains";
 import { useAccount, useSwitchNetwork } from "wagmi";
 import { ArrowsRightLeftIcon, ChevronDownIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
@@ -17,8 +19,50 @@ export const Footer = () => {
   const nativeCurrencyPrice = useGlobalState(state => state.nativeCurrencyPrice);
   const isLocalNetwork = getTargetNetwork().id === hardhat.id;
   const { switchNetwork } = useSwitchNetwork();
-  const { isConnected } = useAccount();
+  const { isConnected, address: connectedAddress } = useAccount();
   const signer = useEthersSigner();
+  const overlayInstanceSDK = useRef<GateFiSDK | null>(null);
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+
+  const handleUnlimitSDKClick = () => {
+    if (overlayInstanceSDK.current) {
+      if (isOverlayVisible) {
+        overlayInstanceSDK.current.hide();
+        setIsOverlayVisible(false);
+      } else {
+        overlayInstanceSDK.current.show();
+        setIsOverlayVisible(true);
+      }
+    } else {
+      const randomString = randomBytes(32).toString("hex");
+      overlayInstanceSDK.current = new GateFiSDK({
+        merchantId: "919970f4-51b0-444c-85ec-681d171fb8d9",
+        displayMode: GateFiDisplayModeEnum.Overlay,
+        nodeSelector: "#overlay-button",
+        isSandbox: true,
+        walletAddress: connectedAddress,
+        email: "shivbhonde04@gamil.com",
+        externalId: randomString,
+        defaultFiat: {
+          currency: "USD",
+          amount: "64",
+        },
+        defaultCrypto: {
+          currency: "ETH",
+        },
+      });
+    }
+
+    overlayInstanceSDK.current?.show();
+    setIsOverlayVisible(true);
+  };
+
+  useEffect(() => {
+    return () => {
+      overlayInstanceSDK.current?.destroy();
+      overlayInstanceSDK.current = null;
+    };
+  }, []);
 
   const [hideWorldCoin, setHideWorldCoin] = useState(false);
   const handleProof = useCallback((result: ISuccessResult) => {
@@ -70,6 +114,15 @@ export const Footer = () => {
                     ))}
                 </ul>
               </div>
+            )}
+            {isConnected && (
+              <button
+                className="btn btn-primary btn-sm font-normal normal-case cursor-auto"
+                id="overlay-button"
+                onClick={handleUnlimitSDKClick}
+              >
+                Buy Crypto
+              </button>
             )}
             {!hideWorldCoin && (
               <div className="flex self-center">
