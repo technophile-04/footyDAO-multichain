@@ -1,4 +1,6 @@
 // @ts-check
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const withTM = require("next-transpile-modules")(["@pushprotocol/uiweb"]);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -15,4 +17,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withTM(nextConfig);

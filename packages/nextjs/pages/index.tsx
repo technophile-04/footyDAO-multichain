@@ -40,7 +40,6 @@ const Home: NextPage = () => {
 
   const { chain: connectedChain } = useNetwork();
   const writeTxn = useTransactor();
-
   const { writeAsync: writeSportsEvent, isLoading: isWriteSportEventLoading } = useContractWrite({
     ...wagmiWriteConfig(connectedChain),
     functionName: "createSportEvent",

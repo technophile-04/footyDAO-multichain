@@ -1,17 +1,11 @@
-import React from "react";
-import Link from "next/link";
+import React, { useCallback, useState } from "react";
+import { Chat } from "@pushprotocol/uiweb";
+import { IDKitWidget, ISuccessResult } from "@worldcoin/idkit";
 import { hardhat, mainnet } from "viem/chains";
 import { useAccount, useSwitchNetwork } from "wagmi";
-import {
-  ArrowsRightLeftIcon,
-  ChevronDownIcon,
-  CurrencyDollarIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/24/outline";
-import { HeartIcon } from "@heroicons/react/24/outline";
+import { ArrowsRightLeftIcon, ChevronDownIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { SwitchTheme } from "~~/components/SwitchTheme";
-import { BuidlGuidlLogo } from "~~/components/assets/BuidlGuidlLogo";
-import { Faucet } from "~~/components/scaffold-eth";
+import { useEthersSigner } from "~~/hooks/Ethers";
 import { useGlobalState } from "~~/services/store/store";
 import { enabledChains } from "~~/services/web3/wagmiConnectors";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
@@ -24,6 +18,22 @@ export const Footer = () => {
   const isLocalNetwork = getTargetNetwork().id === hardhat.id;
   const { switchNetwork } = useSwitchNetwork();
   const { isConnected } = useAccount();
+  const signer = useEthersSigner();
+
+  const [hideWorldCoin, setHideWorldCoin] = useState(false);
+  const handleProof = useCallback((result: ISuccessResult) => {
+    return new Promise<void>(resolve => {
+      console.log("The result after verification is : ", result);
+      setTimeout(() => {
+        resolve();
+      }, 3000);
+    });
+  }, []);
+
+  const onSuccess = (result: ISuccessResult) => {
+    setHideWorldCoin(true);
+    console.log(result);
+  };
 
   return (
     <div className="min-h-0 py-5 px-1 mb-11 lg:mb-0">
@@ -61,51 +71,34 @@ export const Footer = () => {
                 </ul>
               </div>
             )}
-            {isLocalNetwork && (
-              <>
-                <Faucet />
-                <Link href="/blockexplorer" passHref className="btn btn-primary btn-sm font-normal normal-case gap-1">
-                  <MagnifyingGlassIcon className="h-4 w-4" />
-                  <span>Block Explorer</span>
-                </Link>
-              </>
+            {!hideWorldCoin && (
+              <div className="flex self-center">
+                <IDKitWidget
+                  action="my_action"
+                  signal="my_signal"
+                  onSuccess={onSuccess}
+                  handleVerify={handleProof}
+                  app_id="app_staging_4f76c073620098cb451497609cc8cf9c"
+                >
+                  {({ open }) => (
+                    <button className="btn btn-primary btn-sm font-normal normal-case cursor-auto" onClick={open}>
+                      Connect with world coin
+                    </button>
+                  )}
+                </IDKitWidget>
+              </div>
             )}
           </div>
           <SwitchTheme className={`pointer-events-auto ${isLocalNetwork ? "self-end md:self-auto" : ""}`} />
         </div>
       </div>
-      <div className="w-full">
-        <ul className="menu menu-horizontal w-full">
-          <div className="flex justify-center items-center gap-2 text-sm w-full">
-            <div className="text-center">
-              <a href="https://github.com/scaffold-eth/se-2" target="_blank" rel="noreferrer" className="link">
-                Fork me
-              </a>
-            </div>
-            <span>·</span>
-            <div className="flex justify-center items-center gap-2">
-              <p className="m-0 text-center">
-                Built with <HeartIcon className="inline-block h-4 w-4" /> at
-              </p>
-              <a
-                className="flex justify-center items-center gap-1"
-                href="https://buidlguidl.com/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <BuidlGuidlLogo className="w-3 h-5 pb-1" />
-                <span className="link">BuidlGuidl</span>
-              </a>
-            </div>
-            <span>·</span>
-            <div className="text-center">
-              <a href="https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA" target="_blank" rel="noreferrer" className="link">
-                Support
-              </a>
-            </div>
-          </div>
-        </ul>
-      </div>
+      {signer && (
+        <Chat
+          account={"0x55b9CB0bCf56057010b9c471e7D42d60e1111EEa"} //user address
+          supportAddress="0x1A2d838c4bbd1e73d162d0777d142c1d783Cb831" //support address
+          signer={signer}
+        />
+      )}
     </div>
   );
 };
