@@ -76,3 +76,5 @@ Modify the CCIPReceiver.sol in the ` node_modules/@chainlink/contracts-ccip/src/
 
 ⚽⚽ FootyDAO is committed to transparent, decentralized, and fan-engaging sports experiences. Join us in this exciting journey ⚽⚽
 
+### Made with [Scaffold-Eth 2](https://scaffoldeth.io/) ❤️
+
