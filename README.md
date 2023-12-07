@@ -1,78 +1,78 @@
-# 🏗 Scaffold-ETH 2
+# ⚽ FootyDAO ⚽ : Uniting Sports Fans and Content Creators 
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+![Mask group](https://github.com/jrcarlos2000/FootyDAO-contracts/assets/75360886/44fa02f7-1eee-419e-a3e7-208b2ae7d2b0)
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+## Overview
+FootyDAO leverages blockchain technology to revolutionize the sports world by connecting fans, players, and content creators. It offers a decentralized platform for hosting and joining sports games, establishing game rules, and fostering trust through history-based profiles. Additionally, FootyDAO provides a temporary marketplace for content sharing, facilitates live streaming of games to earn tokens, and details weekly rewards in FAN Tokens.
 
-⚙️ Built using NextJS, RainbowKit, Hardhat, Wagmi, and Typescript.
+## Key Features
+- **Decentralized Games**: Easily host or join blockchain-based sports games.
+- **Trust Building**: Develop credible profiles based on your gaming history.
+- **Marketplace**: A temporary hub for content creators and players.
+- **FAN Token Rewards**: Weekly rewards system based on set criteria.
+- **Live Streaming** : Broadcast games and earn tokens. (COMING SOON) 
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+## Multichain Capabilities
+FootyDAO's multichain structure allows participants to join games from any blockchain. It also supports credit card transactions through on-ramp solutions.
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/1171422a-0ce4-4203-bcd4-d2d1941d198b)
+## Repositories 🔐
 
-## Requirements
+- Smart Contracts -> https://github.com/jrcarlos2000/FootyDAO-contracts
+- UI -> https://github.com/technophile-04/footyDAO-multichain
+- Server -> https://github.com/jrcarlos2000/FootyDAO-api
 
-Before you begin, you need to install the following tools:
+## Live Application 👀
+Experience FootyDAO live at [FootyDAO App](https://footy-dao.vercel.app/). 
 
-- [Node (v18 LTS)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
+## Design Resources 🇹🇷
+Explore our design concepts [on Figma - FootyDAO](https://www.figma.com/file/CKBHdH4XdB1NaRWQEHiO54/FootyDAO?type=design&node-id=446-42&mode=design&t=l1m6Af4oEJJGtpDP-0)
 
-## Quickstart
+## Pitch Deck ✨
+View our pitch deck [here](https://pitch.com/v/FootyDAO-qkhhkg)
 
-To get started with Scaffold-ETH 2, follow the steps below:
+## Blockchain Contracts and Interoperability
 
-1. Clone this repo & install dependencies
+- Base FootyDAO Contract - Optimism Goerli: Optimism : [Address](https://goerli-optimism.etherscan.io/address/0xA63184B6e04EF4f9D516feaF6Df65dF602B07a13)
+### Chainlink CCIP transactions - Interoperability 
+- Arbitrum Goerli , Mumbai , Base Goerli  ->  Optimism Goerli : [CCIP LINK](https://ccip.chain.link/address/0xA63184B6e04EF4f9D516feaF6Df65dF602B07a13) Check "incoming"
+### Chainlink Functions: Manage FAN token distribution on the Chiliz network : 
+- Showcased [here](https://mumbai.polygonscan.com/address/0x7043dfb5db32ef820d0bb23e6f168c94e8be8fb2)
+  
+   - 📁 --> call `demoDistribute(:address)` and you will get some FAN tokens minted on chiliz network through functions.
 
+
+## Deployments
+FootyDAO is deployed across multiple testnets including Optimism Goerli, Polygon Mumbai, Arbitrum Goerli, and more.
+
+- [Optimism Goerli Address](https://goerli-optimism.etherscan.io/address/0xA63184B6e04EF4f9D516feaF6Df65dF602B07a13)
+- [Base Goerli Address](https://goerli.basescan.org/address/0x74E01d145AE90a431c7E90b6bDBFd61f007ea921)
+- [Polygon Mumbai Address](https://mumbai.polygonscan.com/address/0xb5964669ae1E5617c62DE976c05CA3D1A63f9Ca4)
+- [Arbitrum Goerli Address](https://goerli.arbiscan.io/address/0x659867Cc60b6aC93c112e55F384898017b2e4919)
+- [Linea Testnet Address](https://explorer.goerli.linea.build/address/0x99370A50eFdB6Aab5CcaF741522FF0C07843DF49/contracts#address-tabs)
+- [Celo Alfajores Address](https://explorer.celo.org/alfajores/address/0xf0a206dcaf5668fa5c824a01a2039d4cf07b771c)
+- [Scroll Sepolia Address](https://sepolia.scrollscan.com/address/0x86695F03264E4676B896cdD590e013815f3493b2)
+- [Bubs Testnet Celestia](https://bubs.calderaexplorer.xyz/address/0x16F219C94bf66127B769901c145bb091092fd3f5/contracts#address-tabs)
+- [Rewards Distributor Chiliz](https://scan.chiliz.com/address/0x6eAe6Ed7923a0C4ba8B8db01B34cc60960458743)
+
+
+## Technology Stack
+- Chainlink CCIP and Functions
+- Chiliz Fan Tokens
+- IPFS
+- API3
+- Worldcoin
+- Unlimit
+
+## Technical Note
+
+For developers, a small tweak is needed in the Chainlink CCIP contracts to avoid interface clashes. 
+Modify the CCIPReceiver.sol in the ` node_modules/@chainlink/contracts-ccip/src/v0.8/ccip/applications/ directory as follows:
+
+```solidity
+  function supportsInterface(bytes4 interfaceId) public pure virtual override returns (bool) {
+    return interfaceId == type(IAny2EVMMessageReceiver).interfaceId || interfaceId == type(IERC165).interfaceId;
+  }
 ```
-git clone https://github.com/scaffold-eth/scaffold-eth-2.git
-cd scaffold-eth-2
-yarn install
-```
 
-2. Run a local network in the first terminal:
+⚽⚽ FootyDAO is committed to transparent, decentralized, and fan-engaging sports experiences. Join us in this exciting journey ⚽⚽
 
-```
-yarn chain
-```
-
-This command starts a local Ethereum network using Hardhat. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `hardhat.config.ts`.
-
-3. On a second terminal, deploy the test contract:
-
-```
-yarn deploy
-```
-
-This command deploys a test smart contract to the local network. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/hardhat/deploy` to deploy the contract to the network. You can also customize the deploy script.
-
-4. On a third terminal, start your NextJS app:
-
-```
-yarn start
-```
-
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
-
-Run smart contract test with `yarn hardhat:test`
-
-- Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
-- Edit your frontend in `packages/nextjs/pages`
-- Edit your deployment scripts in `packages/hardhat/deploy`
-
-## Documentation
-
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
-
-To know more about its features, check out our [website](https://scaffoldeth.io).
-
-## Contributing to Scaffold-ETH 2
-
-We welcome contributions to Scaffold-ETH 2!
-
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
